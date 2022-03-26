@@ -24,39 +24,36 @@ class _SoundListState extends State<SoundList>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification scroll) {
-          if (scroll is ScrollStartNotification) {
-            setState(() {
-              _onSlide = true;
-              _fadeController.forward();
-            });
-          }
-          if (scroll is ScrollEndNotification) {
-            setState(() {
-              _onSlide = false;
-              _fadeController.reverse();
-            });
-          }
-          return true;
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scroll) {
+        if (scroll is ScrollStartNotification) {
+          setState(() {
+            _onSlide = true;
+            _fadeController.forward();
+          });
+        }
+        if (scroll is ScrollEndNotification) {
+          setState(() {
+            _onSlide = false;
+            _fadeController.reverse();
+          });
+        }
+        return true;
+      },
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: widget.soundLists.length,
+        itemBuilder: (BuildContext context, int index) {
+          return FadeTransition(
+            opacity: _fadeAnimation,
+            child: ImageCard(
+              sound: widget.soundLists[index],
+              onSlide: _onSlide,
+              onTap: (Sound sound) =>
+                  _onTapSoundCard(context, widget.soundLists[index]),
+            ),
+          );
         },
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: widget.soundLists.length,
-          itemBuilder: (BuildContext context, int index) {
-            return FadeTransition(
-              opacity: _fadeAnimation,
-              child: ImageCard(
-                sound: widget.soundLists[index],
-                onSlide: _onSlide,
-                onTap: (Sound sound) =>
-                    _onTapSoundCard(context, widget.soundLists[index]),
-              ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -78,8 +75,8 @@ class _SoundListState extends State<SoundList>
         var tween =
             Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-        return ScaleTransition(
-          scale: animation.drive(tween),
+        return FadeTransition(
+          opacity: animation.drive(tween),
           child: child,
         );
       },

@@ -17,38 +17,41 @@ class ImageCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(sound),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        width: 260,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Hero(
-                tag: sound.title,
+        padding: const EdgeInsets.all(16),
+        height: 130,
+        width: double.infinity,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Hero(
+              tag: sound.title,
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
                 child: Image(
                   image: AssetImage(sound.imageURL),
                   fit: BoxFit.cover,
                 ),
               ),
-              Container(
-                color: Colors.black.withOpacity(0.3),
-              ),
-              Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      sound.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+            ),
+            Container(
+              color: Colors.black.withOpacity(0.3),
+            ),
+            Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    sound.title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ))
-            ],
-          ),
+                  ),
+                ))
+          ],
         ),
       ),
     );

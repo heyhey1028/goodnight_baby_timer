@@ -1,9 +1,9 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:goodnight_baby_timer/models/sound.dart';
 import 'package:goodnight_baby_timer/notifiers/player_notifier.dart';
+import 'package:goodnight_baby_timer/screens/home/home_screen.dart';
 import 'package:goodnight_baby_timer/screens/playing/widgets/time_slider.dart';
+import 'package:goodnight_baby_timer/widgets/app_body.dart';
 import 'package:provider/provider.dart';
 
 class PlayingScreenController extends ChangeNotifier {
@@ -136,141 +136,129 @@ class _PlayingScreenState extends State<_PlayingScreen>
     final PlayingScreenController controller =
         context.watch<PlayingScreenController>();
     final Sound sound = player.sound;
-    print('rebuild!');
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leading: FadeTransition(
-          opacity: controller.fadeAnimation,
-          child: IconButton(
-            icon: const Icon(Icons.clear, color: Colors.white),
-            onPressed: () =>
-                Navigator.of(context).popUntil((route) => route.isFirst),
-            iconSize: 40,
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Hero(
-            tag: sound.title,
-            child: ImageFiltered(
-              imageFilter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-              child: Image(
-                colorBlendMode: BlendMode.overlay,
-                color: Colors.grey.withOpacity(0.4),
-                image: AssetImage(sound.imageURL),
-                fit: BoxFit.cover,
+      body: AppBody(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            FadeTransition(
+              opacity: controller.fadeAnimation,
+              child: const Padding(
+                padding: EdgeInsets.only(top: 160.0),
+                child: TimeSlider(),
               ),
             ),
-          ),
-          FadeTransition(
-            opacity: controller.fadeAnimation,
-            child: const Align(
-              alignment: Alignment.center,
-              child: TimeSlider(),
-            ),
-          ),
-          FadeTransition(
-            opacity: controller.fadeAnimation,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 48),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FadeTransition(
-                      opacity: controller.buttonFadeController,
-                      child: GestureDetector(
-                        onTapUp: (_) =>
-                            controller.cancelButtonController.reverse(),
-                        onTapDown: (_) =>
-                            controller.cancelButtonController.forward(),
-                        onTap: () {
-                          print('clear pressed');
-                        },
-                        child: Transform.scale(
-                          scale: controller.cancelButtonScale,
-                          child: const Icon(
-                            Icons.clear,
-                            color: Colors.white,
-                            size: 100,
-                          ),
-                        ),
-                      ),
-                    ),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 1000),
-                      transitionBuilder:
-                          (Widget child, Animation<double> animation) {
-                        return ScaleTransition(
-                          scale: animation,
-                          child: child,
-                        );
-                      },
-                      child: !controller.isPaused
-                          ? GestureDetector(
-                              onTapUp: (_) =>
-                                  controller.playButtonController.reverse(),
-                              onTapDown: (_) =>
-                                  controller.playButtonController.forward(),
-                              onTap: () => controller.pausePlayer(),
-                              child: Transform.scale(
-                                scale: controller.playButtonScale,
-                                child: const Icon(
-                                  Icons.pause,
-                                  color: Colors.white,
-                                  size: 100,
-                                ),
-                              ),
-                            )
-                          : GestureDetector(
-                              onTapUp: (_) =>
-                                  controller.playButtonController.reverse(),
-                              onTapDown: (_) =>
-                                  controller.playButtonController.forward(),
-                              onTap: () => controller.forwardPlayer(),
-                              child: Transform.scale(
-                                scale: controller.playButtonScale,
-                                child: const Icon(
-                                  Icons.play_arrow,
-                                  color: Colors.white,
-                                  size: 100,
-                                ),
-                              ),
-                            ),
-                    ),
-                    FadeTransition(
-                      opacity: controller.buttonFadeController,
-                      child: GestureDetector(
-                        onTapUp: (_) =>
-                            controller.refreshButtonController.reverse(),
-                        onTapDown: (_) =>
-                            controller.refreshButtonController.forward(),
-                        onTap: () => controller.resetPlayer(),
-                        child: Transform.scale(
-                          scale: controller.refreshButtonScale,
+            FadeTransition(
+              opacity: controller.fadeAnimation,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 80),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      FadeTransition(
+                        opacity: controller.buttonFadeController,
+                        child: FloatingActionButton(
+                          heroTag: 'refresh',
+                          onPressed: () => controller.resetPlayer(),
                           child: const Icon(
                             Icons.refresh,
                             color: Colors.white,
-                            size: 100,
+                            size: 36,
                           ),
+                          shape: const CircleBorder(
+                            side: BorderSide(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.transparent,
                         ),
                       ),
-                    ),
-                  ],
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 3000),
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        child: !controller.isPaused
+                            ? FloatingActionButton(
+                                heroTag: 'pause',
+                                onPressed: () => controller.pausePlayer(),
+                                child: const Icon(
+                                  Icons.pause,
+                                  color: Colors.white,
+                                  size: 36,
+                                ),
+                                shape: const CircleBorder(
+                                  side: BorderSide(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.transparent,
+                              )
+                            : FloatingActionButton(
+                                heroTag: 'play',
+                                onPressed: () => controller.forwardPlayer(),
+                                child: const Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.white,
+                                  size: 36,
+                                ),
+                                shape: const CircleBorder(
+                                  side: BorderSide(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.transparent,
+                              ),
+                      ),
+                      FadeTransition(
+                        opacity: controller.buttonFadeController,
+                        child: FloatingActionButton(
+                          heroTag: 'stop',
+                          onPressed: () =>
+                              Navigator.of(context).push(_createRoute()),
+                          child: const Icon(
+                            Icons.stop,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                          shape: const CircleBorder(
+                            side: BorderSide(color: Colors.white),
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const HomeScreen(),
+      transitionDuration: const Duration(milliseconds: 600),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = 0.0;
+        const end = 1.0;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return FadeTransition(
+          opacity: animation.drive(tween),
+          child: child,
+        );
+      },
     );
   }
 }

@@ -8,6 +8,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('GOOD NIGHT BABY TIMER'),
+      ),
       body: Stack(
         children: <Widget>[
           const Image(
@@ -17,16 +20,7 @@ class HomeScreen extends StatelessWidget {
             width: double.infinity,
             alignment: Alignment.center,
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                SoundList(soundLists: createSounds()),
-                const SizedBox(height: 180)
-              ],
-            ),
-          ),
+          SoundList(soundLists: createSounds()),
         ],
       ),
     );
