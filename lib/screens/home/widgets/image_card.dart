@@ -27,11 +27,16 @@ class ImageCard extends StatelessWidget {
               tag: sound.title,
               child: Container(
                 clipBehavior: Clip.hardEdge,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
-                child: Image(
-                  image: AssetImage(sound.imageURL),
-                  fit: BoxFit.cover,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(16),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage(sound.imageURL),
+                    fit: BoxFit.cover,
+                    colorFilter:
+                        const ColorFilter.mode(Colors.grey, BlendMode.multiply),
+                  ),
                 ),
               ),
             ),

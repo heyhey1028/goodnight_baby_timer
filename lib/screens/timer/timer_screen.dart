@@ -73,8 +73,8 @@ class _TimerScreenState extends State<TimerScreen>
                     image: DecorationImage(
                       image: AssetImage(widget.sound.imageURL),
                       fit: BoxFit.cover,
-                      colorFilter:
-                          const ColorFilter.mode(Colors.grey, BlendMode.darken),
+                      colorFilter: const ColorFilter.mode(
+                          Colors.grey, BlendMode.multiply),
                     ),
                   ),
                 ),
